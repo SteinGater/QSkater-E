@@ -1,0 +1,12 @@
+<launch>
+  <arg name="model" />
+  <arg name="gui" default="true" />
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find robot_3dros)/urdf/robot_gazebo.xacro'"/>
+  <param name="use_gui" value="$(arg gui)" />
+  <!-- node name="joint_state_publisher_gui" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" / -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+  <!--node name="rviz" pkg="rviz" type="rviz" args="-d $(find robot_3dros)/urdf.rviz" /-->
+
+  <node name="robot_3dros" pkg="robot_3dros" type="robot_3dros" />
+
+</launch>

@@ -1,0 +1,9 @@
+<library path="lib/librviz_calib_panel">
+  <class name="rviz_calib_panel/CalibPanel"
+         type="CalibPanel"
+         base_class_type="rviz::Panel">
+    <description>
+      RViz plugin for LiDAR and camera joint-calibration
+    </description>
+  </class>
+</library>

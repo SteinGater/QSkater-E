@@ -1,0 +1,8 @@
+#data msg is 
+/robot_msgl/ControlStruct
+#use the rosbag record data
+rosbag record -O test.bag /robot_msgl/ControlStruct
+#use rostopice to the csv file
+rostopic echo -b test.bag -p /robot_msgl/ControlStruct > test.csv
+#use plotjuggle analysis data
+rosrun plotjuggle plotjuggle

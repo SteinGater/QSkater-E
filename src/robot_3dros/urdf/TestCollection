@@ -1,0 +1,2 @@
+1.从xacro文件到urdf文件  rosrun xacro xacro.py -o mybot.urdf SkatingRobotB_Walk.xacro    
+2.从urdf文件到sdf文件   gz sdf -p mybot.urdf > mybot.sdf

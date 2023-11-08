@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="robot_3dros" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<!--all parament*******************************************************************************************-->
+   <xacro:include filename="robot_parameter.xacro" />
+
+<!--Robot Model*******************************************************************************************-->
+  <link name="dummy_link"></link>
+  <joint name="dummy_joint" type="fixed">
+      <parent link="dummy_link"/>
+      <child link="body"/> 
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+  <link name="body">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="6.375" />
+      <inertia ixx="0.02" ixy="0.02" ixz="0" iyy="0.04" iyz="0" izz="0.1" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://robot_3dros/meshes/body.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.75294 0.75294 0.75294 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry> <box size="0.32 0.2 0.1" /></geometry>
+      <!--geometry><mesh filename="package://robot_3dros/meshes/body.STL" /></geometry-->
+    </collision>
+  </link>
+
+<!--Leg Model*******************************************************************************************-->
+<xacro:macro name="Leg_Model" params="number LR FB bodyX bodyY">
+
+  <link name="Leg${number}_1">
+    <inertial>
+      <origin xyz="-0.0048088 0.011984 -0.00014763" rpy="0 0 0" />
+      <mass value="0.737" />
+      <inertia ixx="0.00019653" ixy="-1.8591E-05" ixz="4.9889E-07" iyy="0.0003475" iyz="2.6057E-07" izz="0.00025499" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry> <mesh filename="package://robot_3dros/meshes/hip.STL" /> </geometry>
+      <material name=""> <color rgba="0 1 1 1" /> </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0.01 0" rpy="${pi/2} 0 0" />
+      <geometry> <cylinder length="0.05" radius="0.042"/></geometry>
+      <!--geometry> <mesh filename="package://robot_3dros/meshes/hip.STL" /> </geometry-->
+    </collision>
+  </link>
+  <joint name="Joint${number}_1" type="revolute">
+    <origin xyz="${bodyX} ${bodyY} 0" rpy="${LR*pi} ${FB*pi} 0 " />
+    <parent link="body" />
+    <child link="Leg${number}_1" />
+    <axis xyz="${(1-2*FB)} 0 0" />
+    <xacro:insert_block name="S_first_joint"/>
+  </joint>
+
+  <link name="Leg${number}_2">
+    <inertial>
+      <origin xyz="0.00046621 -0.06095 -0.033086" rpy="0 0 0" />
+      <mass value="1.33" />
+      <inertia ixx="0.0022624" ixy="2.2337E-06" ixz="1.0859E-05" iyy="0.0021546" iyz="-0.00038069" izz="0.00060986" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry> <mesh filename="package://robot_3dros/meshes/thigh.STL" /> </geometry>
+      <material name=""> <color rgba="1 1 1 1" /> </material>
+    </visual>
+    <collision>
+      <origin xyz="0 -0.082 -0.07" rpy="0 0 0" />
+      <geometry> <box size="0.05 0.05 0.14" /></geometry>
+      <!--geometry> <mesh filename="package://robot_3dros/meshes/thigh.STL" /> </geometry-->
+    </collision>
+  </link>
+  <joint name="Joint${number}_2" type="revolute">
+    <origin xyz="0 0 0" rpy="0 ${(LR+FB)*pi} 0" />
+    <parent link="Leg${number}_1" />
+    <child link="Leg${number}_2" />
+    <axis xyz="0 ${(1-2*LR)} 0" />
+    <xacro:insert_block name="S_second_joint"/>
+  </joint>
+
+
+  <link name="Leg${number}_3">
+    <inertial>
+      <origin xyz="-3.32159080737304E-05 -0.0842117243955346 -0.0778011311158" rpy="0 0 0" />
+      <mass value="0.3378415573005454" />
+      <inertia ixx="0.000118289188240736" ixy="-1.20605766690612E-08" ixz="-9.79904638356768E-08" iyy="0.00011232311367555" iyz="2.56592635035973E-07" izz="1.04214285216922E-05" /> 
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry> <mesh filename="package://robot_3dros/meshes/calf.STL" /> </geometry>
+      <material name=""> <color rgba="0 0 1 1" /> </material>
+    </visual>
+    <collision>
+      <origin xyz="0 -0.083 -0.08" rpy="0 0 0" />
+      <geometry> <box size="0.024 0.022 0.16" /></geometry>
+      <!--geometry> <mesh filename="package://robot_3dros/meshes/calf.STL" /> </geometry-->
+    </collision>
+  </link>
+  <joint name="Joint${number}_3" type="revolute">
+    <origin xyz="0 0 -0.2" rpy="0 0 0" />
+    <parent link="Leg${number}_2" />
+    <child link="Leg${number}_3" />
+    <axis xyz="0 ${(1-2*LR)} 0" />
+    <xacro:insert_block name="S_third_joint"/>
+  </joint>
+
+  <link name="Leg${number}_foot">
+    <inertial>
+      <origin xyz="0.012517870330808 -1.9353823470486E-05 -0.0332306211433281" rpy="0 0 0" />
+      <mass value="0.030238937745945" />
+      <inertia ixx="2.19593557894146E-05" ixy="-7.46531081559123E-09" ixz="4.59219164049463E-06" iyy="2.29896117102417E-05" iyz="1.78638237651423E-08" izz="1.14229789878151E-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry> <mesh filename="package://robot_3dros/meshes/foot.STL" /> </geometry>
+      <material name=""> <color rgba="0 0 0 1" /> </material>
+    </visual>
+    <collision>
+      <origin xyz="0.01 -0.01 -0.076" rpy="0 0 0" />
+      <geometry> <mesh filename="package://robot_3dros/meshes/wheel.STL" /> </geometry>
+    </collision>
+  </link>
+  <joint name="Joint${number}_foot" type="revolute">
+    <origin xyz="0 -0.0842 -0.1565" rpy="0 0 ${LR*pi}" /> <!--${LR*pi-(1-2*fabs(LR-(FB*Wheel_Stuct)))*Dir_Angle}-->
+    <parent link="Leg${number}_3" />
+    <child link="Leg${number}_foot" />
+    <axis xyz="0 0 1" />
+    <xacro:insert_block name="S_Direct_joint"/>
+  </joint>
+
+  <link name="Leg${number}_wheel">
+    <inertial>
+      <origin xyz="0 2.77555756156289E-17 -5.55111512312578E-17" rpy="0 0 0" />
+      <mass value="0.0586549867962651" />
+      <inertia ixx="1.50205903282747E-05" ixy="1.88454867092046E-20" ixz="9.56249863142618E-35" iyy="2.60162395319431E-05" iyz="5.43092277337669E-20" izz="1.50205903282747E-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry> <mesh filename="package://robot_3dros/meshes/wheel.STL" /> </geometry>
+      <material name=""> <color rgba="1 0 0 1" /> </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <!--geometry> <cylinder length="0.05" radius="0.05"/></geometry-->
+      <geometry> <mesh filename="package://robot_3dros/meshes/wheel.STL" /> </geometry>
+    </collision>
+  </link>
+  <joint name="Joint${number}_wheel" type="continuous">
+    <origin xyz="0 0 ${-0.0435}" rpy="0 0 0" />
+    <parent link="Leg${number}_foot" />
+    <child link="Leg${number}_wheel" />
+    <axis xyz="0 1 0" />
+    <xacro:insert_block name="S_Wheel_joint"/>
+  </joint>
+
+</xacro:macro>
+
+
+<!--ALL Leg Set*******************************************************************************************-->
+  <xacro:Leg_Model number="1" LR="0" FB="0" bodyX="${BODYX}" bodyY="${-BODYY}"></xacro:Leg_Model>
+  <xacro:Leg_Model number="2" LR="1" FB="0" bodyX="${BODYX}" bodyY="${BODYY}"></xacro:Leg_Model>
+  <xacro:Leg_Model number="3" LR="1" FB="1" bodyX="${-BODYX}" bodyY="${BODYY}"></xacro:Leg_Model>
+  <xacro:Leg_Model number="4" LR="0" FB="1" bodyX="${-BODYX}" bodyY="${-BODYY}"></xacro:Leg_Model> 
+
+</robot>

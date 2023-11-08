@@ -1,0 +1,19 @@
+##########宏观的一些指令
+int32 computeCommand
+##########指令对应功能
+int32 COMPUTE_SHUTDOWN = 0
+int32 COMPUTE_SIMULATE = 1 #仿真模式
+int32 COMPUTE_REALWORD = 2 #实物模式
+int32 COMPUTE_IMUOPEN  = 3 #开启IMU
+int32 COMPUTE_IMUCLOSE = 4 #关闭IMU
+int32 COMPUTE_JOINT_POSITION = 5 #关节位置模式控制
+int32 COMPUTE_JOINT_VELOCITY = 6 #关节速度模式控制
+int32 COMPUTE_JOINT_TORQUE   = 7 #关节力矩模式控制
+
+int32 COMPUTE_RESET_JOINT    =100 #重置关节初始角度
+
+####################################
+---
+
+int32 error_codes #错误代码
+

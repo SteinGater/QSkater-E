@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="robot_gazebo" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<!--include robot model ******************************************************************************-->
+   <xacro:include filename="robot_3dros.xacro" />
+
+   <!--link name="world"/>
+    <joint name="myfixed" type="fixed">
+           <parent link="world"/>
+           <child link="dummy_link"/> 
+           <origin xyz="0 0 0" rpy="0 0 0 "/>
+    </joint-->
+    
+
+<!--gazebo*******************************************************************************************-->
+   <!--the based transmission-->
+   <gazebo>
+       <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+         <robotNamespace>/robot_gazebo</robotNamespace>
+          <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+          <legacyModeNS>true</legacyModeNS>
+       </plugin>
+   </gazebo>
+
+   <!--IMU sensor-->
+   <gazebo reference="body">
+    	<gravity>true</gravity>
+    	<sensor name="imu_sensor" type="imu">
+      	     <always_on>true</always_on>
+      	     <update_rate>200</update_rate>
+      	     <visualize>true</visualize>
+     	     <topic>__default_topic__</topic>
+      	     <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+        	<topicName>imu/data</topicName>
+        	<bodyName>body</bodyName>
+        	<updateRateHZ>200.0</updateRateHZ>
+        	<gaussianNoise>0.0</gaussianNoise>
+        	<xyzOffset>0 0 0</xyzOffset>
+        	<rpyOffset>0 0 0</rpyOffset>
+        	<frameName>body</frameName>
+        	<!--initialOrientationAsReference>false</initialOrientationAsReference-->
+      	     </plugin>
+      	     <pose>0 0 0 0 0 0</pose>
+   	</sensor>
+   </gazebo>
+
+   <!--the link gazebo parament-->
+   <xacro:macro name="Gazebo_SetF" params="the_name">
+	<gazebo reference="${the_name}">
+		<xacro:insert_block name="Contact_Parameter"/>
+                <selfCollide>false</selfCollide>
+        </gazebo>
+   </xacro:macro>
+   <xacro:macro name="Gazebo_SetT" params="the_name">
+	<gazebo reference="${the_name}">
+		<xacro:insert_block name="Contact_Parameter"/>
+                <selfCollide>true</selfCollide>
+        </gazebo>
+   </xacro:macro>
+
+   <xacro:macro name="Leg_Gazebo_Set" params="number">
+	<xacro:Gazebo_SetF the_name="Leg${number}_1"></xacro:Gazebo_SetF>
+	<xacro:Gazebo_SetT the_name="Leg${number}_2"></xacro:Gazebo_SetT>
+	<xacro:Gazebo_SetT the_name="Leg${number}_3"></xacro:Gazebo_SetT>
+	<xacro:Gazebo_SetF the_name="Leg${number}_foot"></xacro:Gazebo_SetF>
+	<xacro:Gazebo_SetT the_name="Leg${number}_wheel"></xacro:Gazebo_SetT>
+   </xacro:macro>
+
+   <xacro:Gazebo_SetT the_name="body"></xacro:Gazebo_SetT>
+   <xacro:Leg_Gazebo_Set number="1"></xacro:Leg_Gazebo_Set>
+   <xacro:Leg_Gazebo_Set number="2"></xacro:Leg_Gazebo_Set>
+   <xacro:Leg_Gazebo_Set number="3"></xacro:Leg_Gazebo_Set>
+   <xacro:Leg_Gazebo_Set number="4"></xacro:Leg_Gazebo_Set>
+
+   <!--the gazebo contact sensor between link and world-->
+   <xacro:macro name="Foot_Parament" params="the_name">
+   	<gazebo reference="${the_name}">
+	      <sensor name="${the_name}_bumper_sensor" type="contact">
+		<visualize>true</visualize>
+		<always_on>true</always_on>
+		<update_rate>1000</update_rate>
+		<contact> <collision>${the_name}_W_collision</collision> </contact>
+		<plugin name="gazebo_ros_bumper_controller" filename="libgazebo_ros_bumper.so">
+                    <always_on>true</always_on>
+		    <update_rate>1000</update_rate>
+		    <robotNamespace>/robot_gazebo</robotNamespace>
+		    <bumperTopicName>${the_name}_bumper_states</bumperTopicName>
+		    <frameName>${the_name}</frameName>
+		</plugin>
+	       </sensor>
+   	</gazebo>
+   </xacro:macro>
+
+   <!--xacro:Foot_Parament the_name="Leg1_wheel"></xacro:Foot_Parament>
+   <xacro:Foot_Parament the_name="Leg1_foot"></xacro:Foot_Parament>
+   <xacro:Foot_Parament the_name="Leg2_wheel"></xacro:Foot_Parament>
+   <xacro:Foot_Parament the_name="Leg2_foot"></xacro:Foot_Parament>
+   <xacro:Foot_Parament the_name="Leg3_wheel"></xacro:Foot_Parament>
+   <xacro:Foot_Parament the_name="Leg3_foot"></xacro:Foot_Parament>
+   <xacro:Foot_Parament the_name="Leg4_wheel"></xacro:Foot_Parament>
+   <xacro:Foot_Parament the_name="Leg4_foot"></xacro:Foot_Parament-->
+
+   <!--the gazebo actual of joint-->
+   <xacro:macro name="Based_trans" params="the_name">
+       <transmission name="${the_name}_trans">
+           <type>transmission_interface/SimpleTransmission</type>
+           <joint name="${the_name}">
+                <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+           </joint>
+           <actuator name="${the_name}_motor">
+                <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+                <mechanicalReduction>1</mechanicalReduction>
+           </actuator>
+       </transmission>
+   </xacro:macro>  
+
+   <xacro:Based_trans the_name="Joint1_1"></xacro:Based_trans>
+   <xacro:Based_trans the_name="Joint1_2"></xacro:Based_trans>
+   <xacro:Based_trans the_name="Joint1_3"></xacro:Based_trans>
+   <xacro:Based_trans the_name="Joint2_1"></xacro:Based_trans>
+   <xacro:Based_trans the_name="Joint2_2"></xacro:Based_trans>
+   <xacro:Based_trans the_name="Joint2_3"></xacro:Based_trans>
+   <xacro:Based_trans the_name="Joint3_1"></xacro:Based_trans>
+   <xacro:Based_trans the_name="Joint3_2"></xacro:Based_trans>
+   <xacro:Based_trans the_name="Joint3_3"></xacro:Based_trans>
+   <xacro:Based_trans the_name="Joint4_1"></xacro:Based_trans>
+   <xacro:Based_trans the_name="Joint4_2"></xacro:Based_trans>
+   <xacro:Based_trans the_name="Joint4_3"></xacro:Based_trans>
+   
+   <xacro:Based_trans the_name="Joint1_foot"></xacro:Based_trans>
+   <xacro:Based_trans the_name="Joint2_foot"></xacro:Based_trans>
+   <xacro:Based_trans the_name="Joint3_foot"></xacro:Based_trans>
+   <xacro:Based_trans the_name="Joint4_foot"></xacro:Based_trans>
+
+   <xacro:Based_trans the_name="Joint1_wheel"></xacro:Based_trans>
+   <xacro:Based_trans the_name="Joint2_wheel"></xacro:Based_trans>
+   <xacro:Based_trans the_name="Joint3_wheel"></xacro:Based_trans>
+   <xacro:Based_trans the_name="Joint4_wheel"></xacro:Based_trans>
+
+
+</robot>

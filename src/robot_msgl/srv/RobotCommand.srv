@@ -1,0 +1,44 @@
+###########the command of this control
+
+int32 Robot_Command  #机器人控制指令
+
+int32 CONTROL_EMERGENCY       =-1 #紧急停止
+int32 CONTROL_STOP            =0  #正常停止
+int32 CONTROL_STAY            =1  #基本运动
+int32 CONTROL_MOVE            =2  #步态移动
+int32 CONTROL_BOUNDING        =3  #步态跳跃
+int32 CONTROL_CHANGE          =10 #分支足式/轮式模式切换
+int32 CONTROL_TEST            =100 #机身六自由度运动测试
+
+#the gait style of legs
+int32[6] BranchModel    #分支模式：足/轮/臂
+int32 BRANCH_LEG	=0
+int32 BRANCH_WHEEL	=1
+int32 BRANCH_ARM	=2
+int32[6] BranchState    #分支状态：摆动/支撑
+int32 BRANCH_SWI	=0
+int32 BRANCH_SUP        =1
+
+robot_msgl/TipStruct body #指令机身状态
+robot_msgl/TipStruct[6] BranchTip #指令机身状态
+
+#####the type of gait
+int32 gait_type #步态类型
+int32 GAIT_TROT=0
+int32 GAIT_PACE=1
+int32 GAIT_BOUNDING=2
+int32 GAIT_STATIC=10
+int32 GAIT_SWIZZLING=11
+
+#####gait time+gait number
+float64[2] time #步态周期+步态次数
+#运动方向（与X方向夹角）+步长+步角+抬腿高度
+float64[4] gait_para
+#轮滑侧向摆动距离+轮滑翻滚角度+轮滑推地占空比+轮滑推地方向+轮最大偏航角
+float64[5] skating_para
+###################################################
+---
+
+int32 error #指令错误代码
+
+

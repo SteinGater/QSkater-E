@@ -1,0 +1,13 @@
+<launch>
+    <arg name="Gazebo_Flag" default="false"/>
+
+    <group if="$(arg Gazebo_Flag)">
+    	<rosparam  file="$(find robot_main)/config/robot_control_sim.yaml" command="load"/>
+    </group>
+    <group unless="$(arg Gazebo_Flag)">
+    	<rosparam  file="$(find robot_main)/config/robot_control.yaml" command="load"/>
+    </group>
+    <node pkg="robot_main" name="robot_main" type="robot_main" output="screen"/>
+
+</launch>
+

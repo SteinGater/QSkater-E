@@ -1,0 +1,20 @@
+<launch>
+    <arg name="Gazebo_Flag" default="false"/>
+
+    <include file="$(find robot_main)/launch/StartMain.launch">
+	<arg name="Gazebo_Flag" value="$(arg Gazebo_Flag)"/>
+    </include>
+
+    <include file="$(find robot_joy)/launch/StartJoy.launch"/>
+    <node pkg="robot_qt5" name="robot_qt5" type="robot_qt5"/>
+    <include file="$(find robot_3dros)/launch/robot_display.launch"/>
+
+    <group if="$(arg Gazebo_Flag)">
+    	<include file="$(find robot_3dros)/launch/robot_gazebo.launch"/>
+    </group>
+    <group unless="$(arg Gazebo_Flag)">
+        <include file="$(find robot_main)/launch/StartIMU.launch"/>
+    </group>
+
+</launch>
+

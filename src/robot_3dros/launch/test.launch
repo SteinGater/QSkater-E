@@ -1,0 +1,8 @@
+<launch>
+
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find robot_3dros)/config/robot_gazebo.yaml" command="load"/>
+
+  <node pkg="robot_3dros" name="robot_joint_control" type="robot_joint_control" output="screen"/>
+
+</launch>

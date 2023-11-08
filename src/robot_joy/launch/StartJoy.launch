@@ -1,0 +1,7 @@
+<launch>
+
+    <node pkg="joy" name="joy" type="joy_node" respawn="true"/>
+    <node pkg="robot_joy" name="robot_joy" type="robot_joy" /> <!--output="screen"-->
+
+</launch>
+

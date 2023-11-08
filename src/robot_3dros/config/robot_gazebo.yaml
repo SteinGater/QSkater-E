@@ -1,0 +1,72 @@
+robot_gazebo:
+
+  # Publish all joint states -----------------------------------#
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 1000
+
+
+  # Position Controllers ---------------------------------------#
+  Joint_controller:
+     type: effort_controllers/JointGroupEffortController
+     joints: 
+          - Joint1_1
+          - Joint1_2
+          - Joint1_3
+          - Joint2_1
+          - Joint2_2
+          - Joint2_3
+          - Joint3_1
+          - Joint3_2
+          - Joint3_3
+          - Joint4_1
+          - Joint4_2
+          - Joint4_3
+
+  Direction_controller:
+     type: effort_controllers/JointGroupEffortController
+     joints: 
+          - Joint1_foot
+          - Joint2_foot
+          - Joint3_foot
+          - Joint4_foot
+
+  Wheel_controller:
+     type: effort_controllers/JointGroupEffortController
+     joints: 
+          - Joint1_wheel
+          - Joint2_wheel
+          - Joint3_wheel
+          - Joint4_wheel
+
+robot_gazebo/Joint_controller:
+          Joint1_1/pid: {p: 1.0, i: 0.1, d: 0, i_clamp_max: 1000, i_clamp_min: -1000}
+          Joint1_2/pid: {p: 1.0, i: 0.5, d: 0, i_clamp_max: 1000, i_clamp_min: -1000}
+          Joint1_3/pid: {p: 1.0, i: 0.5, d: 0, i_clamp_max: 1000, i_clamp_min: -1000}
+          Joint2_1/pid: {p: 1.0, i: 0.1, d: 0, i_clamp_max: 1000, i_clamp_min: -1000}
+          Joint2_2/pid: {p: 1.0, i: 0.5, d: 0, i_clamp_max: 1000, i_clamp_min: -1000}
+          Joint2_3/pid: {p: 1.0, i: 0.5, d: 0, i_clamp_max: 1000, i_clamp_min: -1000}
+          Joint3_1/pid: {p: 1.0, i: 0.1, d: 0, i_clamp_max: 1000, i_clamp_min: -1000}
+          Joint3_2/pid: {p: 1.0, i: 0.5, d: 0, i_clamp_max: 1000, i_clamp_min: -1000}
+          Joint3_3/pid: {p: 1.0, i: 0.5, d: 0, i_clamp_max: 1000, i_clamp_min: -1000}
+          Joint4_1/pid: {p: 1.0, i: 0.1, d: 0, i_clamp_max: 1000, i_clamp_min: -1000}
+          Joint4_2/pid: {p: 1.0, i: 0.5, d: 0, i_clamp_max: 1000, i_clamp_min: -1000}
+          Joint4_3/pid: {p: 1.0, i: 0.5, d: 0, i_clamp_max: 1000, i_clamp_min: -1000}
+
+          Max_T: 30.0
+
+robot_gazebo/Direction_controller:
+          Joint1_foot/pid: {p: 0.01, i: 0.0001, d: 0, i_clamp_max: 1000, i_clamp_min: -1000}
+          Joint2_foot/pid: {p: 0.01, i: 0.0001, d: 0, i_clamp_max: 1000, i_clamp_min: -1000}
+          Joint3_foot/pid: {p: 0.01, i: 0.0001, d: 0, i_clamp_max: 1000, i_clamp_min: -1000}
+          Joint4_foot/pid: {p: 0.01, i: 0.0001, d: 0, i_clamp_max: 1000, i_clamp_min: -1000}
+
+robot_gazebo/Wheel_controller:
+          Joint1_wheel/pid: {p: 0.0, i: 0.0, d: 0, i_clamp_max: 1000, i_clamp_min: -1000}
+          Joint2_wheel/pid: {p: 0.0, i: 0.0, d: 0, i_clamp_max: 1000, i_clamp_min: -1000}
+          Joint3_wheel/pid: {p: 0.0, i: 0.0, d: 0, i_clamp_max: 1000, i_clamp_min: -1000}
+          Joint4_wheel/pid: {p: 0.0, i: 0.0, d: 0, i_clamp_max: 1000, i_clamp_min: -1000}
+
+
+
+

@@ -1,0 +1,38 @@
+<launch>
+
+  <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
+  <include
+    file="$(find robot_3dros)/launch/empty_world.launch" >
+    <arg name="world_name" value="$(find robot_3dros)/worlds/world.world"/>
+    <arg name="paused" value="true"/>
+    <arg name="use_sim_time" value="true"/>
+  </include>
+
+  <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
+  <node name="tf_footprint_base" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 base_link base_footprint 40" />
+  <!--param name="robot_description"
+      command="$(find xacro)/xacro - -inorder '$(find robot_3dros)/urdf/robot_gazebo.xacro'"/-->
+  <node name="robot_3dros_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -model robot_3dros -param robot_description -x 0 -y 0 -z 0.33
+                  -J Joint1_1 0 -J Joint1_2 -0.723 -J Joint1_3 1.45 -J Joint1_foot 0 -J Joint1_wheel 0
+                  -J Joint2_1 0 -J Joint2_2 -0.723 -J Joint2_3 1.45 -J Joint2_foot 0 -J Joint2_wheel 0
+                  -J Joint3_1 0 -J Joint3_2 -0.723 -J Joint3_3 1.45 -J Joint3_foot 0 -J Joint3_wheel 0
+                  -J Joint4_1 0 -J Joint4_2 -0.723 -J Joint4_3 1.45 -J Joint4_foot 0 -J Joint4_wheel 0"
+    output="screen" />
+  <param name="hurdles_description" command="$(find xacro)/xacro --inorder '$(find robot_3dros)/urdf/Hurdles.xacro'"/>
+  <node name="Hurdles_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -model Hurdles -param hurdles_description -x 5"/>
+  <node name="fake_joint_calibration" pkg="rostopic" type="rostopic" args="pub /calibrated std_msgs/Bool true" />
+
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find robot_3dros)/config/robot_gazebo.yaml" command="load"/>
+
+  <!-- load the controllers -->
+  <node name="controller_spawner1" pkg="controller_manager" type="spawner" respawn="false"
+    output="screen" ns="/robot_gazebo" args="joint_state_controller Joint_controller Direction_controller Wheel_controller"/>
+
+  <!-- convert joint states to TF transforms for rviz, etc -->
+  <!--node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen">
+  </node-->
+
+  <node pkg="robot_3dros" name="robot_joint_control" type="robot_joint_control" output="screen"/>
+
+</launch>
